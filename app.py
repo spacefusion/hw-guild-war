@@ -1,5 +1,58 @@
 import streamlit as st
 import pandas as pd
+from greedyMatchmaking import greedy_matchmaking
+
+@st.cache_data
+def load_statistics():
+    df = pd.read_csv("statistics.csv")
+
+    own_cols = ["Own1", "Own2", "Own3", "Own4", "Own5"]
+    enemy_cols = ["Enemy1", "Enemy2", "Enemy3", "Enemy4", "Enemy5"]
+
+    # Normalize hero order so order does not matter
+    df["own_team_sorted"] = df[own_cols].apply(
+        lambda row: tuple(sorted(row.astype(str))), axis=1
+    )
+
+    df["enemy_team_sorted"] = df[enemy_cols].apply(
+        lambda row: tuple(sorted(row.astype(str))), axis=1
+    )
+
+    return df
+
+def get_my_team_members(statistics_df):
+    members = []
+
+    grouped = statistics_df.groupby("Player")
+
+    for player_name, group in grouped:
+        row = group.iloc[0]
+
+        own_team = tuple(sorted([
+            row["Own1"],
+            row["Own2"],
+            row["Own3"],
+            row["Own4"],
+            row["Own5"],
+        ]))
+
+        members.append({
+            "name": player_name,
+            "team": own_team
+        })
+
+    return members
+
+def can_defeat(member, enemy):
+    enemy_sorted = tuple(sorted(enemy["heroes"]))
+
+    match = statistics_df[
+        (statistics_df["Player"] == member["name"]) &
+        (statistics_df["enemy_team_sorted"] == enemy_sorted)
+    ]
+
+    return not match.empty
+
 
 st.set_page_config(page_title="Team Matcher", layout="wide")
 
@@ -28,6 +81,8 @@ num_teams = st.number_input(
 )
 
 enemy_teams = []
+
+statistics_df = load_statistics()
 
 for i in range(num_teams):
     st.subheader(f"Enemy Team {i+1}")
@@ -67,5 +122,22 @@ if st.button("Calculate Matchups"):
             "Each team must have exactly 5 heroes selected."
         )
     else:
-        st.success("Input valid. Ready for matching logic.")
-        st.write(enemy_teams)
+        my_team_members = get_my_team_members(statistics_df)
+
+        assignments = greedy_matchmaking(
+            enemy_teams,
+            my_team_members,
+            can_defeat
+        )
+
+        if assignments:
+            st.success("Assignments created")
+            st.write(assignments)
+        else:
+            st.warning("No valid assignments found")
+
+
+
+
+def can_defeat(member, enemy):
+    return member["strength"] >= enemy["strength"]
