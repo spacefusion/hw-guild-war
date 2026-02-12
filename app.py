@@ -53,6 +53,24 @@ def can_defeat(member, enemy):
 
     return not match.empty
 
+def prettify_assignments(assignments):
+    """
+    Returns a Streamlit-friendly prettified output of assignments.
+
+    Each enemy team is a header, with the assigned player and their team below.
+    """
+    for assign in assignments:
+        enemy_name = assign["enemy_team"]
+        enemy_heroes = ", ".join(assign["enemy_heroes"])
+        player_name = assign["assigned_player"]
+        player_team = ", ".join(assign["player_team"])
+
+        st.subheader(f"Enemy: {enemy_name}")
+        st.write(f"**Enemy Heroes:** {enemy_heroes}")
+        st.write(f"**Assigned Player:** {player_name}")
+        st.write(f"**Player Team:** {player_team}")
+        st.markdown("---")
+
 st.set_page_config(page_title="Team Matcher", layout="wide")
 
 st.title("Enemy Teams Input")
@@ -135,6 +153,7 @@ if st.button("Calculate Matchups"):
 
         if assignments:
             st.success("Assignments created")
-            st.write(assignments)
+            prettify_assignments(assignments)
         else:
             st.warning("No valid assignments found")
+
