@@ -90,14 +90,39 @@ HEROES = sorted([
     "Somna","Lara Croft","Jet","Drayne"
 ])
 
+ENEMY_NAMES = [
+    "Festung 1",
+    "Festung 2",
+    "Festung 3",
+    "Festung 4",
+    "Festung 5",
+    "Festung 6",
+    "Festung 7",
+    "Leuchtturm 1",
+    "Leuchtturm 2",
+    "Leuchtturm 3",
+    "Akademie 1",
+    "Akademie 2",
+    "Akademie 3",
+    "Kaserne 1",
+    "Kaserne 2",
+    "Kaserne 3",
+    "Gießerei 1",
+    "Gießerei 2",
+    "Gießerei 3",
+    "Gießerei 4"
+]
+
+
 num_teams = st.number_input(
     "Number of Enemy Teams",
     min_value=1,
     max_value=20,
-    value=5
+    value=1
 )
 
 enemy_teams = []
+selected_names = []
 
 statistics_df = load_statistics()
 
@@ -107,11 +132,19 @@ for i in range(num_teams):
     
     col1, col2 = st.columns([1, 3])
     
+    # Only show names that are not already selected
+    available_names = [
+        name for name in ENEMY_NAMES
+        if name not in selected_names
+    ]
+
     with col1:
-        team_name = st.text_input(
-            "Team Name",
+        team_name = st.selectbox(
+            "Select Enemy Name",
+            options=available_names,
             key=f"name_{i}"
         )
+        selected_names.append(team_name)
     
     with col2:
         selected_heroes = st.multiselect(
