@@ -38,7 +38,8 @@ def get_my_team_members(statistics_df):
 
         members.append({
             "name": player_name,
-            "team": own_team
+            "team": own_team,
+            "power_own": row["Power Own"]
         })
 
     return members
@@ -51,7 +52,10 @@ def can_defeat(member, enemy):
         (statistics_df["enemy_team_sorted"] == enemy_sorted)
     ]
 
-    return not match.empty
+    if match.empty:
+        return None
+
+    return match.iloc[0]
 
 def prettify_assignments(assignments):
     """
@@ -61,14 +65,16 @@ def prettify_assignments(assignments):
     """
     for assign in assignments:
         enemy_name = assign["enemy_team"]
+        enemy_power = assign["enemy_power"]
         enemy_heroes = ", ".join(assign["enemy_heroes"])
+
         player_name = assign["assigned_player"]
+        player_power = assign["player_power"]
         player_team = ", ".join(assign["player_team"])
 
-        st.subheader(f"Enemy: {enemy_name}")
-        st.write(f"**Enemy Heroes:** {enemy_heroes}")
-        st.write(f"**Assigned Player:** {player_name}")
-        st.write(f"**Player Team:** {player_team}")
+        st.subheader(f"{enemy_name} ({enemy_power})")
+        st.write(f"Enemy Heroes: {enemy_heroes}")
+        st.write(f"{player_name} ({player_power}) : {player_team}")
         st.markdown("---")
 
 st.set_page_config(page_title="Team Matcher", layout="wide")
