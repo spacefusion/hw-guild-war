@@ -48,9 +48,17 @@ def greedy_matchmaking(enemy_teams, my_team_members, can_defeat_func):
             key=lambda m: remaining_attacks[m]
         )[0]
 
+        # Get the player's team
+        player_team = next(
+            m["team"] for m in my_team_members if m["name"] == chosen
+        )
+
+        # Include enemy heroes for full overview
         assignments.append({
             "enemy_team": enemy["team_name"],
-            "assigned_member": chosen
+            "enemy_heroes": enemy["heroes"],
+            "assigned_player": chosen,
+            "player_team": player_team
         })
 
         remaining_attacks[chosen] -= 1

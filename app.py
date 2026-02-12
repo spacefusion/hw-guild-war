@@ -53,7 +53,6 @@ def can_defeat(member, enemy):
 
     return not match.empty
 
-
 st.set_page_config(page_title="Team Matcher", layout="wide")
 
 st.title("Enemy Teams Input")
@@ -84,6 +83,7 @@ enemy_teams = []
 
 statistics_df = load_statistics()
 
+# Create enemy team input sections
 for i in range(num_teams):
     st.subheader(f"Enemy Team {i+1}")
     
@@ -107,6 +107,9 @@ for i in range(num_teams):
         "team_name": team_name,
         "heroes": selected_heroes
     })
+
+# Move the calculate button below the enemy inputs
+st.markdown("<br><br>", unsafe_allow_html=True)
 
 if st.button("Calculate Matchups"):
     
@@ -135,9 +138,3 @@ if st.button("Calculate Matchups"):
             st.write(assignments)
         else:
             st.warning("No valid assignments found")
-
-
-
-
-def can_defeat(member, enemy):
-    return member["strength"] >= enemy["strength"]
