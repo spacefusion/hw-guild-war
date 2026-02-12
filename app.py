@@ -6,6 +6,10 @@ from greedyMatchmaking import greedy_matchmaking
 def load_statistics():
     df = pd.read_csv("statistics.csv")
 
+    # parse to numeric value
+    df["Power Own"] = pd.to_numeric(df["Power Own"], errors="coerce")
+    df["Power Enemy"] = pd.to_numeric(df["Power Enemy"], errors="coerce")
+
     own_cols = ["Own1", "Own2", "Own3", "Own4", "Own5"]
     enemy_cols = ["Enemy1", "Enemy2", "Enemy3", "Enemy4", "Enemy5"]
 
@@ -44,18 +48,29 @@ def get_my_team_members(statistics_df):
 
     return members
 
-def can_defeat(member, enemy):
+def can_defeat(member, enemy, statistics_df, power_offset):
     enemy_sorted = tuple(sorted(enemy["heroes"]))
+    specified_power = enemy.get("specified_power", 0)
 
-    match = statistics_df[
+    matches = statistics_df[
         (statistics_df["Player"] == member["name"]) &
         (statistics_df["enemy_team_sorted"] == enemy_sorted)
     ]
 
-    if match.empty:
+    if matches.empty:
         return None
 
-    return match.iloc[0]
+    for _, row in matches.iterrows():
+
+        if specified_power == 0:
+            return row
+
+        required_min_power = specified_power - power_offset
+
+        if row["Power Enemy"] >= required_min_power:
+            return row
+
+    return None
 
 def prettify_assignments(assignments):
     """
@@ -72,9 +87,18 @@ def prettify_assignments(assignments):
         player_power = assign["player_power"]
         player_team = ", ".join(assign["player_team"])
 
-        st.subheader(f"{enemy_name} ({enemy_power})")
+        # Format powers with k and handle NaN
+        enemy_power_str = f"{int(enemy_power)}k" if pd.notna(enemy_power) else "?"
+        player_power_str = f"{int(player_power)}k" if pd.notna(player_power) else "?"
+
+        st.subheader(f"{enemy_name} ({enemy_power_str})")
         st.write(f"Enemy Heroes: {enemy_heroes}")
-        st.write(f"{player_name} ({player_power}) : {player_team}")
+         # Player info with green team
+        st.markdown(
+            f"<span style='color:green'>{player_name} ({player_power_str}) : </span>"
+            f"<span style='color:green'>{player_team}</span>",
+            unsafe_allow_html=True
+        )
         st.markdown("---")
 
 st.set_page_config(page_title="Team Matcher", layout="wide")
@@ -132,6 +156,14 @@ selected_names = []
 
 statistics_df = load_statistics()
 
+power_offset = st.number_input(
+    "Allowed Enemy Power Offset (k)",
+    min_value=0,
+    value=10,
+    step=1,
+    help="Value is in thousands. Example: 10 means 10k."
+)
+
 # Create enemy team input sections
 for i in range(num_teams):
     st.subheader(f"Enemy Team {i+1}")
@@ -150,6 +182,16 @@ for i in range(num_teams):
             options=available_names,
             key=f"name_{i}"
         )
+
+        enemy_power = st.number_input(
+            "Enemy Power (k, optional)",
+            min_value=0,
+            value=0,
+            step=1,
+            key=f"power_{i}",
+            help="Value is in thousands. Example: 60 means 60k."
+)
+
         selected_names.append(team_name)
     
     with col2:
@@ -162,7 +204,8 @@ for i in range(num_teams):
     
     enemy_teams.append({
         "team_name": team_name,
-        "heroes": selected_heroes
+        "heroes": selected_heroes,
+        "specified_power": enemy_power
     })
 
 # Move the calculate button below the enemy inputs
@@ -184,15 +227,34 @@ if st.button("Calculate Matchups"):
     else:
         my_team_members = get_my_team_members(statistics_df)
 
-        assignments = greedy_matchmaking(
+        assignments, unassigned_enemies = greedy_matchmaking(
             enemy_teams,
             my_team_members,
-            can_defeat
-        )
+            lambda member, enemy: can_defeat(
+                member,
+                enemy,
+                statistics_df,
+                power_offset
+            )
+)
 
         if assignments:
             st.success("Assignments created")
             prettify_assignments(assignments)
+
+            if unassigned_enemies:
+                st.warning("No valid assignment found for the following enemy teams:")
+
+                for enemy in unassigned_enemies:
+                    name = enemy["team_name"]
+                    heroes = ", ".join(enemy["heroes"])
+                    specified_power = enemy.get("specified_power", 0)
+
+                    if specified_power:
+                        st.write(f"- {name} ({specified_power}k)")
+                    else:
+                        st.write(f"- {name}")
+
+                    st.write(f"  Heroes: {heroes}")
         else:
             st.warning("No valid assignments found")
-

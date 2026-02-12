@@ -24,6 +24,7 @@ def greedy_matchmaking(enemy_teams, my_team_members, can_defeat_func):
     enemy_options.sort(key=lambda x: len(x["possible_members"]))
 
     assignments = []
+    unassigned_enemies = []
 
     for entry in enemy_options:
         enemy = entry["enemy"]
@@ -35,6 +36,7 @@ def greedy_matchmaking(enemy_teams, my_team_members, can_defeat_func):
         ]
 
         if not valid_members:
+            unassigned_enemies.append(enemy)
             continue
 
         chosen = sorted(
@@ -61,4 +63,4 @@ def greedy_matchmaking(enemy_teams, my_team_members, can_defeat_func):
 
         remaining_attacks[chosen["member_name"]] -= 1
 
-    return assignments
+    return assignments,unassigned_enemies
