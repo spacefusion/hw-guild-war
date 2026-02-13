@@ -129,19 +129,10 @@ guilds = sorted(
 
 selected_guild = st.selectbox(
     "Choose Guild Template",
-    guilds
+    options=["Empty"] + guilds,
+    index=0
 )
-guild_templates = templates_df[
-    templates_df["Guild"] == selected_guild
-]
-prefill_teams = []
-
-for _, row in guild_templates.iterrows():
-    prefill_teams.append({
-        "team_name": row["Building"],
-        "heroes": row["enemy_team"],
-        "power": row["Power"]
-    })
+prefill_clicked = st.button("Prefill Template")
 
 st.title("Enemy Teams Input")
 
@@ -184,11 +175,55 @@ ENEMY_NAMES = [
 ]
 
 
+
+
+if prefill_clicked:
+
+    if selected_guild == "Empty":
+        # Remove only relevant keys
+        keys_to_delete = [
+            key for key in st.session_state.keys()
+            if key.startswith(("name_", "power_", "heroes_"))
+        ]
+
+        for key in keys_to_delete:
+            del st.session_state[key]
+
+        st.rerun()
+
+    else:
+        guild_templates = templates_df[
+            templates_df["Guild"] == selected_guild
+        ]
+
+        prefill_teams = []
+
+        for _, row in guild_templates.iterrows():
+            prefill_teams.append({
+                "team_name": row["Building"],
+                "heroes": row["enemy_team"],
+                "power": row["Power"]
+            })
+
+        # IMPORTANT: store template size
+        st.session_state["num_teams"] = len(prefill_teams)
+
+        for i, team in enumerate(prefill_teams):
+            st.session_state[f"name_{i}"] = team["team_name"]
+            st.session_state[f"power_{i}"] = int(team["power"])
+            st.session_state[f"heroes_{i}"] = team["heroes"]
+
+        st.rerun()
+
+
+if "num_teams" not in st.session_state:
+    st.session_state["num_teams"] = 1
+
 num_teams = st.number_input(
     "Number of Enemy Teams",
     min_value=1,
     max_value=20,
-    value=1
+    key="num_teams"
 )
 
 enemy_teams = []
@@ -204,13 +239,6 @@ power_offset = st.number_input(
     help="Value is in thousands. Example: 10 means 10k."
 )
 
-if selected_guild:
-    for i, team in enumerate(prefill_teams):
-        st.session_state[f"name_{i}"] = team["team_name"]
-        st.session_state[f"power_{i}"] = int(team["power"])
-
-        # multiselect expects list
-        st.session_state[f"heroes_{i}"] = team["heroes"]
         
 # Create enemy team input sections
 for i in range(num_teams):
