@@ -101,7 +101,47 @@ def prettify_assignments(assignments):
         )
         st.markdown("---")
 
+@st.cache_data
+def load_templates():
+    df = pd.read_csv("templates.csv")
+
+    df["Power"] = pd.to_numeric(df["Power"], errors="coerce").fillna(0)
+
+    hero_cols = ["Enemy 1", "Enemy 2", "Enemy 3", "Enemy 4", "Enemy 5"]
+
+    df["Guild"] = df["Guild"].astype(str).str.strip()
+
+    df["enemy_team"] = df[hero_cols].apply(
+        lambda row: [h for h in row if pd.notna(h)], axis=1
+    )
+
+    return df
+
 st.set_page_config(page_title="Team Matcher", layout="wide")
+
+templates_df = load_templates()
+
+guilds = sorted(
+    templates_df["Guild"]
+    .dropna()
+    .unique()
+)
+
+selected_guild = st.selectbox(
+    "Choose Guild Template",
+    guilds
+)
+guild_templates = templates_df[
+    templates_df["Guild"] == selected_guild
+]
+prefill_teams = []
+
+for _, row in guild_templates.iterrows():
+    prefill_teams.append({
+        "team_name": row["Building"],
+        "heroes": row["enemy_team"],
+        "power": row["Power"]
+    })
 
 st.title("Enemy Teams Input")
 
@@ -164,6 +204,14 @@ power_offset = st.number_input(
     help="Value is in thousands. Example: 10 means 10k."
 )
 
+if selected_guild:
+    for i, team in enumerate(prefill_teams):
+        st.session_state[f"name_{i}"] = team["team_name"]
+        st.session_state[f"power_{i}"] = int(team["power"])
+
+        # multiselect expects list
+        st.session_state[f"heroes_{i}"] = team["heroes"]
+        
 # Create enemy team input sections
 for i in range(num_teams):
     st.subheader(f"Enemy Team {i+1}")
