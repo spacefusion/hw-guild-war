@@ -1,31 +1,73 @@
-Player,Own1,Own2,Own3,Own4,Own5,Power Own,WinRate,Power Enemy,Enemy1,Enemy2,Enemy3,Enemy4,Enemy5
-Nicki,Folio,Polaris,XeSha,Tempus,Astaroth,777,,712,Yasmine,Astaroth,Somna,Guus,Aidan
-Nicki,XeSha,Lian,Tempus,Aidan,Astaroth,767,,750,Kayla,Corvus,Octavia,Dante,Aidan
-Laura,Dante,Drayne,Octavia,Corvus,Tempus,1030,,723,Iris,Tempus,Polaris,Corvus,Nebula
-Laura,Folio,Maya,Satori,Julius,Lian,1060,,684,Champi und Gnon,Mojo,Alvanor,Somna,Tempus
-Kaio,Iris,Folio,Tempus,Somna,Guus,735,,640,Kayla,Champi und Gnon,Aidan,Astaroth,Kai
-Lord Fuuu,Iris,Dante,Polaris,Octavia,Nebula,644,10:0,640,Oya,Astaroth,Champi und Gnon,Kayla,Aidan
-Nikozahn,Peech,Polaris,Folio,Somna,Tempus,701,,633,Kayla,Folio,Polaris,Julius,Aidan
-Kyros,Kayla,Isaac,Julius,Oya,Aidan,718,,644,Satori,Celeste,Lian,Astaroth,Martha
-Kyros,Kayla,Isaac,Julius,Oya,Aidan,718,,626,Kayla,Julius,Folio,Polaris,Aidan
-Lord Fuuu,Iris,Julius,Tempus,Polaris,Nebula,634,10:0,676,Julius,Ginger,Isaac,Polaris,Nebula
-Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,18:2,643,Aidan,Guus,Tempus,Kayla,Oya
-Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,10:0,617,Aidan,Guus,Yasmine,Kayla,Oya
-Klinge,Astaroth,Kayla,XeSha,Peech,Aidan,799,10:0,712,Aidan,Guus,Yasmine,Kayla,Oya
-Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,30:0,705,Fafnir,Yasmine,Oya,Tristan,Hackebeil
-Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,30:0,787,Aidan,Champi und Gnon,Kayla,Oya,Astaroth
-Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,30:0,919,Somna,Mojo,Tempus,Alvanor,Champi und Gnon
-Lord Fuuu,Iris,Julius,Tempus,Polaris,Nebula,634,10:0,916,Martha,Isaac,Nebula,Sebastian,Julius
-Nikozahn,Electra,Soleil,Iris,Julius,Polaris,781,30:0,712,Aidan,Guus,Yasmine,Kayla,Oya
-Laura,Jhu,Dante,Yasmine,Electra,Maya,1200,,922,Yasmine,Byrna,Octavia,Folio,Guus
-Laura,Arachne,Kai,Byrna,Electra,Maya,1170,,1000,Yasmine,Folio,Octavia,Somna,Byrna
-Klinge,Kayla,Astaroth,Aidan,Tempus,Fafnir,785,,747,Yasmine,Oya,Dante,Octavia,Guus
-Nicki,Kayla,Octavia,Dante,Aidan,Guus,729,,745,Corvus,Iris,Yasmine,Octavia,Dante
-Nikozahn,Folio,Polaris,Electra,Maya,Soleil,743,,670,Kayla,Julius,Folio,Byrna,Aidan
-Nikozahn,Iris,Folio,Polaris,Tempus,Electra,785,,706,XeSha,Kayla,Tempus,Astaroth,Aidan
-Moe,Artemis,Julius,Tristan,Polaris,Fafnir,681,10:0,648,Kayla,Oya,Tempus,Guus,Aidan
-Moe,Artemis,Julius,Tristan,Polaris,Fafnir,681,,578,Kayla,Julius,Somna,Guus,Aidan
-Klinge,Kayla,Peech,XeSha,Aidan,Astaroth,799,,669,Oya,Yasmine,Kayla,Guus,Aidan
-Nikozahn,Iris,Polaris,Folio,Electra,Soleil,781,,637,Yasmine,Oya,Hackebeil,Tristan,Fafnir
-Klinge,Kayla,Peech,XeSha,Aidan,Astaroth,799,,675,Kai,Peech,Elmir,Draufgänger,Dorian
-Yotilar,Kayla,Isaac,Julius,Richter,Aidan,614,,689,Keira,Galahad,Astaroth,Fafnir,Martha
+Player,Own1,Own2,Own3,Own4,Own5,Power Own,WinRate,Power Enemy,Enemy1,Enemy2,Enemy3,Enemy4,Enemy5,Building,Guild
+Nicki,Folio,Polaris,XeSha,Tempus,Astaroth,777,,712,Yasmine,Astaroth,Somna,Guus,Aidan,,
+Nicki,XeSha,Lian,Tempus,Aidan,Astaroth,767,,750,Kayla,Corvus,Octavia,Dante,Aidan,,
+Laura,Dante,Drayne,Octavia,Corvus,Tempus,1030,,723,Iris,Tempus,Polaris,Corvus,Nebula,,
+Laura,Folio,Maya,Satori,Julius,Lian,1060,,684,Champi und Gnon,Mojo,Alvanor,Somna,Tempus,,
+Kaio,Iris,Folio,Tempus,Somna,Guus,735,,640,Kayla,Champi und Gnon,Aidan,Astaroth,Kai,,
+Lord Fuuu,Iris,Dante,Polaris,Octavia,Nebula,644,10:0,640,Oya,Astaroth,Champi und Gnon,Kayla,Aidan,,
+Nikozahn,Peech,Polaris,Folio,Somna,Tempus,701,,633,Kayla,Folio,Polaris,Julius,Aidan,,
+Kyros,Kayla,Isaac,Julius,Oya,Aidan,718,,644,Satori,Celeste,Lian,Astaroth,Martha,,
+Kyros,Kayla,Isaac,Julius,Oya,Aidan,718,,626,Kayla,Julius,Folio,Polaris,Aidan,,
+Lord Fuuu,Iris,Julius,Tempus,Polaris,Nebula,634,10:0,676,Julius,Ginger,Isaac,Polaris,Nebula,,
+Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,18:2,643,Aidan,Guus,Tempus,Kayla,Oya,,
+Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,10:0,617,Aidan,Guus,Yasmine,Kayla,Oya,,
+Klinge,Astaroth,Kayla,XeSha,Peech,Aidan,799,10:0,712,Aidan,Guus,Yasmine,Kayla,Oya,,
+Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,30:0,705,Fafnir,Yasmine,Oya,Tristan,Hackebeil,,
+Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,30:0,787,Aidan,Champi und Gnon,Kayla,Oya,Astaroth,,
+Lord Fuuu,Dante,Nebula,Iris,Polaris,Octavia,644,30:0,919,Somna,Mojo,Tempus,Alvanor,Champi und Gnon,,
+Lord Fuuu,Iris,Julius,Tempus,Polaris,Nebula,634,10:0,916,Martha,Isaac,Nebula,Sebastian,Julius,,
+Nikozahn,Electra,Soleil,Iris,Julius,Polaris,781,30:0,712,Aidan,Guus,Yasmine,Kayla,Oya,,
+Laura,Jhu,Dante,Yasmine,Electra,Maya,,,922,Yasmine,Byrna,Octavia,Folio,Guus,,
+Laura,Arachne,Kai,Byrna,Electra,Maya,1200,,1000,Yasmine,Folio,Octavia,Somna,Byrna,,
+Klinge,Kayla,Astaroth,Aidan,Tempus,Fafnir,785,,747,Yasmine,Oya,Dante,Octavia,Guus,,
+Nicki,Kayla,Octavia,Dante,Aidan,Guus,729,,745,Corvus,Iris,Yasmine,Octavia,Dante,,
+Nikozahn,Folio,Polaris,Electra,Maya,Soleil,743,,670,Kayla,Julius,Folio,Byrna,Aidan,,
+Nikozahn,Iris,Folio,Polaris,Tempus,Electra,785,,706,XeSha,Kayla,Tempus,Astaroth,Aidan,,
+Moe,Artemis,Julius,Tristan,Polaris,Fafnir,681,10:0,648,Kayla,Oya,Tempus,Guus,Aidan,,
+Moe,Artemis,Julius,Tristan,Polaris,Fafnir,681,,578,Kayla,Julius,Somna,Guus,Aidan,,
+Klinge,Kayla,Peech,XeSha,Aidan,Astaroth,799,,669,Oya,Yasmine,Kayla,Guus,Aidan,,
+Nikozahn,Iris,Polaris,Folio,Electra,Soleil,781,,637,Yasmine,Oya,Hackebeil,Tristan,Fafnir,,
+Klinge,Kayla,Peech,XeSha,Aidan,Astaroth,799,,675,Kai,Peech,Elmir,Draufgänger,Dorian,,
+Yotilar,Kayla,Isaac,Julius,Richter,Aidan,614,,689,Keira,Galahad,Astaroth,Fafnir,Martha,,
+Klinge,Astaroth,Kayla,XeSha,Peech,Aidan,799,10:0,664,Aidan,Kaskade,Heidi,Kayla,Julius,,
+Klinge,Corvus,Dante,Tempus,morrigan,octavia,744,10:0,748,octavia,Lillith,XeSha,iris,Hackebeil,,
+Klinge,Julius,Iris,Somna,Folio,Polaris,730,10:0,695,Markus,Amira,jorgen,Satori,Astaroth,,
+Nixdewiss,Julius,Kayla,Arachne,Polaris,Aidan,787,10:0,633,Lillith,Fafnir,Jorgen,Kayla,Julius,,
+Gollum,Hackebeil,Luther,Tristan,Artemis,Fafnir,558,10:0,627,Martha,Artemis,Gesichtsloser,Ishmael,Rufus,,
+Gollum,Corvus,Dante,Tempus,Morrigan,Octavia,752,10:0,633,Lillith,Fafnir,Jorgen,Kayla,Julius,,
+Laura,Kayla,Jhu,Yasmine,Julius,Byrna,1159,,704,Kayla,Julius,Polaris,Polaris,Aidan,Festung 1,ALL 591
+Laura,Iris,Satori,Byrna,Folio,Julius,1109,,799,Folio,Kayla,Julius,Aidan,Somna,Festung 2,ALL 591
+Kaio,Iris,Somna,Guus,Tempus,Folio,735,,672,Karkh,Kaskade,Peech,Julius,Fafnir,Festung 3,ALL 591
+Kaio,Iris,Somna,Guus,Tempus,Folio,735,,663,Quing Mao,Jhu,Mojo,Ginger,Astaroth,Festung 4,ALL 591
+Lord Fuuu,Iris,Polaris,Julius,Tempus,Nebula,630,10:0,680,Julius,Polaris,Isaac,Richter,Folio,Festung 5,ALL 591
+Gollum,Corvus,Dante,Octavia,Morrigan,Tempus,752,,565,Ginger,Draufgänger,Dorian,Isaac,Astaroth,Festung 6,ALL 591
+Kyros,Kayla,Julius,Oya,Isaac,Aidan,720,,627,Celeste,Satori,XeSha,Julius,Martha,Festung 7,ALL 591
+Nicki,XeSha,Champi und Gnon,Somna,Tempus,Aidan,770,,767,Kayla,Aidan,Guus,Astaroth,Karkh,Gießerei 1,ALL 591
+Klinge,Julius,Kayla,Iris,Folio,Aidan,794,10:0,635,Helios,Polaris,Krista,Lars,Astaroth,Gießerei 2,ALL 591
+Kyros,Kayla,Julius,Oya,Isaac,Aidan,720,,616,XeSha,Champi und Gnon,Astaroth,Tempus,Aidan,Gießerei 3,ALL 591
+Nikozahn,Electra,Soleil,Iris,Folio,Polaris,782,10:0,704,Octavia,Sebastian,Dante,Yasmine,Oya,Gießerei 4,ALL 591
+Chrissomat,Iris,Octavia,Dante,Phobos,Corvus,757,,590,Iris,Octavia,Morrigan,Corvus,Tempus,Akademie 1,ALL 591
+Nikozahn,Electra,Tempus,Soleil,Iris,Folio,789,10:0,752,Aidan,Peech,Somna,Kayla,Julius,Akademie 3,ALL 591
+Moe,Artemis,Julius,Luther,Polaris,Fafnir,666,,600,Yasmine,Julius,Mojo,Sebastian,Polaris,Akademie 2,ALL 591
+Yotilar,Kayla,Isaac,Julius,Aidan,Richter,616,,610,Gesichtsloser,Helios,Astaroth,Aurora,Amira,Kaserne 1,ALL 591
+Moe,Artemis,Luther,Hackebeil,Tristan,Fafnir,712,,538,Iris,Corvus,Keira,Oya,Octavia,Kaserne 2,ALL 591
+Oromis,Lillith,XeSha,Phobos,Dorian,Astaroth,599,,500,Artemis,Tristan,Astaroth,Martha,Fafnir,Kaserne 3,ALL 591
+Nicki,XeSha,Champi und Gnon,Aidan,Astaroth,Martha,763,,658,Ginger,Isaac,Julius,Richter,Nebula,Leuchtturm 1,ALL 591
+Klinge,Peech,XeSha,Kayla,Astaroth,Aidan,799,,643,Somna,Tristan,Kayla,Kaskade,Oya,Leuchtturm 2,ALL 591
+Oromis,Lillith,XeSha,Phobos,Dorian,Astaroth,599,,615,Fafnir,Keira,Andvari,Astaroth,Gesichtsloser,Leuchtturm 3,ALL 591
+Laura,Folio,Byrna,Satori,Iris,Julius,1109,,878,Folio,Kayla,Julius,Aidan,Somna,Festung 1,BETEpaHbI Xaoca
+Nicki,Satori,Xesha,Astrid,Polaris,Astaroth,728,,795,Yasmine,Dante,Oya,Octavia,Sebastian,Festung 2,BETEpaHbI Xaoca
+Kyros,Kayla,Isaac,Julius,Oya,Aidan,720,,687,Kayla,Tristan,Oya,Aidan,Tempus,Festung 3,BETEpaHbI Xaoca
+Kyros,Kayla,Isaac,Julius,Oya,Aidan,718,,670,Keira,Karkh,Sebastian,Ishmael,Astaroth,Festung 4,BETEpaHbI Xaoca
+Klinge,Folio,Kayla,Julius,Tempus,Aidan,786,,631,Satori,Folio,Somna,Tempus,Astaroth,Festung 5,BETEpaHbI Xaoca
+Laura,Kayla,Drayne,Corvus,Dante,Octavia,1101,,850,Kayla,Folio,Julius,Yasmine,Aidan,Festung 6,BETEpaHbI Xaoca
+Moe,Artemis,Hackebeil,Julius,Polaris,Fafnir,670,,550,Kayla,Oya,Octavia,Dante,Aidan,Festung 7,BETEpaHbI Xaoca
+Nikozahn,Iris,Folio,Polaris,Soleil,Electra,782,,806,Oya,Kayla,Tristan,Julius,Yasmine,Gießerei 1,BETEpaHbI Xaoca
+Nikozahn,Iris,Folio,Polaris,Soleil,Electra,782,,682,Kayla,Julius,Somna,Aidan,Fafnir,Gießerei 2,BETEpaHbI Xaoca
+Yotilar,Kayla,Isaac,Richter,Julius,Aidan,615,,681,Satori,Kaskade,Folio,Lian,Somna,Gießerei 3,BETEpaHbI Xaoca
+Milasha,Iris,Krista,Lars,Octavia,Dorian,577,,628,Kayla,Helios,Polaris,Oya,Somna,Gießerei 4,BETEpaHbI Xaoca
+Nicki,Folio,Corvus,Lian,Polaris,Morrigan,756,,736,Folio,Kayla,Octavia,Astaroth,Aidan,Kaserne 1,BETEpaHbI Xaoca
+Yotilar,Kayla,Isaac,Julius,Richter,Aidan,615,,594,Kayla,Astaroth,Dorian,Tempus,Aidan,Kaserne 2,BETEpaHbI Xaoca
+Gollum,Dante,Corvus,Octavia,morrigan,Tempus,753,,667,Yasmine,Jhu,Sebastian,Thea,Astaroth,Kaserne 3,BETEpaHbI Xaoca
+Klinge,Kayla,Peech,Astaroth,Aidan,Fafnir,792,,653,Kayla,Oya,Octavia,Guus,Aidan,Akademie 1,BETEpaHbI Xaoca
+Sharan,Kayla,Satori,Celeste,Ishmael,Aidan,723,,594,Kayla,Luther,Tristan,Oya,Fafnir,Akademie 3,BETEpaHbI Xaoca
