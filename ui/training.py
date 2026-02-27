@@ -3,28 +3,27 @@ from config.constants import HEROES, TEAM_NAMES
 
 
 def show_training_ui():
-    st.title("Insert Training Data")
+    st.title("Trainingsdaten speichern")
 
-    name = st.selectbox("Your Name", TEAM_NAMES)
+    name = st.selectbox("Dein Name", TEAM_NAMES)
     own_team = st.multiselect(
-        "Your Team (5 heroes)", HEROES, max_selections=5
+        "Dein Team (5 Helden)", HEROES, max_selections=5
     )
-
+    own_strength = st.number_input(
+        "Deine Stärke (k)", min_value=0, value=0
+    )
     siege = st.number_input("Siege", min_value=0, value=0)
     niederlagen = st.number_input("Niederlagen", min_value=0, value=0)
 
     enemy_team = st.multiselect(
-        "Enemy Team (5 heroes)", HEROES, max_selections=5, key="enemy_training"
+        "Gegnerisches Team (5 Helden)", HEROES, max_selections=5, key="enemy_training"
     )
 
-    own_strength = st.number_input(
-        "Your Team Strength (k)", min_value=0, value=0
-    )
     enemy_strength = st.number_input(
-        "Enemy Team Strength (k)", min_value=0, value=0
+        "Gegnerische Stärke (k)", min_value=0, value=0
     )
 
-    if st.button("Submit Training Data"):
+    if st.button("Daten absenden"):
         submitted = {
             "name": name,
             "own_team": own_team,

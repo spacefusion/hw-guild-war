@@ -79,7 +79,6 @@ def can_defeat(member, enemy, statistics_df, power_offset):
 def prettify_assignments(assignments):
     """
     Returns a Streamlit-friendly prettified output of assignments.
-
     Each enemy team is a header, with the assigned player and their team below.
     """
     for assign in assignments:
@@ -133,17 +132,17 @@ def show_matchmaking_ui():
     )
 
     selected_guild = st.selectbox(
-        "Choose Guild Template",
-        options=["Empty"] + guilds,
+        "Wähle eine Beispiel Gilde aus",
+        options=["Leer"] + guilds,
         index=0
     )
-    prefill_clicked = st.button("Prefill Template")
+    prefill_clicked = st.button("Mit Alianzdaten befüllen")
 
-    st.title("Enemy Teams Input")
+    st.title("Gegnerische Teams")
 
     if prefill_clicked:
 
-        if selected_guild == "Empty":
+        if selected_guild == "Leer":
             # Remove only relevant keys
             keys_to_delete = [
                 key for key in st.session_state.keys()
@@ -183,7 +182,7 @@ def show_matchmaking_ui():
         st.session_state["num_teams"] = 1
 
     num_teams = st.number_input(
-        "Number of Enemy Teams",
+        "Anzahl gegnerischer Teams",
         min_value=1,
         max_value=20,
         key="num_teams"
@@ -195,17 +194,17 @@ def show_matchmaking_ui():
     statistics_df = load_statistics()
 
     power_offset = st.number_input(
-        "Allowed Enemy Power Offset (k)",
+        "Erlaubter Stärkeunterschied (k)",
         min_value=0,
         value=10,
         step=1,
-        help="Value is in thousands. Example: 10 means 10k."
+        help="k=1000. Beispiel: 10 is equivalent zu 10k."
     )
 
     
     # Create enemy team input sections
     for i in range(num_teams):
-        st.subheader(f"Enemy Team {i+1}")
+        st.subheader(f"Gegner {i+1}")
         
         col1, col2 = st.columns([1, 3])
         
@@ -217,25 +216,25 @@ def show_matchmaking_ui():
 
         with col1:
             team_name = st.selectbox(
-                "Select Enemy Name",
+                "Position",
                 options=available_names,
                 key=f"name_{i}"
             )
 
             enemy_power = st.number_input(
-                "Enemy Power (k, optional)",
+                "Gegnerstärke (k, optional)",
                 min_value=0,
                 value=0,
                 step=1,
                 key=f"power_{i}",
-                help="Value is in thousands. Example: 60 means 60k."
+                help="k=1000. Beispiel: 10 is equivalent zu 10k."
             )
 
             selected_names.append(team_name)
         
         with col2:
             selected_heroes = st.multiselect(
-                "Select 5 Heroes",
+                "Wähle exakt 5 Helden",
                 HEROES,
                 max_selections=5,
                 key=f"heroes_{i}"
@@ -250,7 +249,7 @@ def show_matchmaking_ui():
     # Move the calculate button below the enemy inputs
     st.markdown("<br><br>", unsafe_allow_html=True)
 
-    if st.button("Calculate Matchups"):
+    if st.button("Berechnen"):
         
         # Validation
         incomplete_teams = [
@@ -261,7 +260,7 @@ def show_matchmaking_ui():
         
         if incomplete_teams:
             st.error(
-                "Each team must have exactly 5 heroes selected."
+                "Jedes Team muss aus exakt 5 Helden bestehen."
             )
         else:
             my_team_members = get_my_team_members(statistics_df)
@@ -296,4 +295,4 @@ def show_matchmaking_ui():
 
                         st.write(f"  Heroes: {heroes}")
             else:
-                st.warning("No valid assignments found")
+                st.warning("Keine passenden Zuweisungen gefunden")
