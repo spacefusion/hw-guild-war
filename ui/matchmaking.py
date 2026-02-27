@@ -3,6 +3,7 @@ import pandas as pd
 from services.greedyMatchmaking import greedy_matchmaking
 from config.constants import GK_POSITIONS, HEROES
 
+
 @st.cache_data
 def load_statistics():
     df = pd.read_csv("statistics.csv")
@@ -34,19 +35,21 @@ def get_my_team_members(statistics_df):
     for player_name, group in grouped:
         row = group.iloc[0]
 
-        own_team = tuple(sorted([
-            row["Own1"],
-            row["Own2"],
-            row["Own3"],
-            row["Own4"],
-            row["Own5"],
-        ]))
+        own_team = tuple(
+            sorted(
+                [
+                    row["Own1"],
+                    row["Own2"],
+                    row["Own3"],
+                    row["Own4"],
+                    row["Own5"],
+                ]
+            )
+        )
 
-        members.append({
-            "name": player_name,
-            "team": own_team,
-            "power_own": row["Power Own"]
-        })
+        members.append(
+            {"name": player_name, "team": own_team, "power_own": row["Power Own"]}
+        )
 
     return members
 
@@ -56,8 +59,8 @@ def can_defeat(member, enemy, statistics_df, power_offset):
     specified_power = enemy.get("specified_power", 0)
 
     matches = statistics_df[
-        (statistics_df["Player"] == member["name"]) &
-        (statistics_df["enemy_team_sorted"] == enemy_sorted)
+        (statistics_df["Player"] == member["name"])
+        & (statistics_df["enemy_team_sorted"] == enemy_sorted)
     ]
 
     if matches.empty:
@@ -96,11 +99,11 @@ def prettify_assignments(assignments):
 
         st.subheader(f"{enemy_name} ({enemy_power_str})")
         st.write(f"Enemy Heroes: {enemy_heroes}")
-         # Player info with green team
+        # Player info with green team
         st.markdown(
             f"<span style='color:green'>{player_name} ({player_power_str}) : </span>"
             f"<span style='color:green'>{player_team}</span>",
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
         st.markdown("---")
 
@@ -125,16 +128,10 @@ def load_templates():
 def show_matchmaking_ui():
     templates_df = load_templates()
 
-    guilds = sorted(
-        templates_df["Guild"]
-        .dropna()
-        .unique()
-    )
+    guilds = sorted(templates_df["Guild"].dropna().unique())
 
     selected_guild = st.selectbox(
-        "Wähle eine Beispiel Gilde aus",
-        options=["Leer"] + guilds,
-        index=0
+        "Wähle eine Beispiel Gilde aus", options=["Leer"] + guilds, index=0
     )
     prefill_clicked = st.button("Mit Alianzdaten befüllen")
 
@@ -145,7 +142,8 @@ def show_matchmaking_ui():
         if selected_guild == "Leer":
             # Remove only relevant keys
             keys_to_delete = [
-                key for key in st.session_state.keys()
+                key
+                for key in st.session_state.keys()
                 if key.startswith(("name_", "power_", "heroes_"))
             ]
 
@@ -155,18 +153,18 @@ def show_matchmaking_ui():
             st.rerun()
 
         else:
-            guild_templates = templates_df[
-                templates_df["Guild"] == selected_guild
-            ]
+            guild_templates = templates_df[templates_df["Guild"] == selected_guild]
 
             prefill_teams = []
 
             for _, row in guild_templates.iterrows():
-                prefill_teams.append({
-                    "team_name": row["Building"],
-                    "heroes": row["enemy_team"],
-                    "power": row["Power"]
-                })
+                prefill_teams.append(
+                    {
+                        "team_name": row["Building"],
+                        "heroes": row["enemy_team"],
+                        "power": row["Power"],
+                    }
+                )
 
             # IMPORTANT: store template size
             st.session_state["num_teams"] = len(prefill_teams)
@@ -182,10 +180,7 @@ def show_matchmaking_ui():
         st.session_state["num_teams"] = 1
 
     num_teams = st.number_input(
-        "Anzahl gegnerischer Teams",
-        min_value=1,
-        max_value=20,
-        key="num_teams"
+        "Anzahl gegnerischer Teams", min_value=1, max_value=20, key="num_teams"
     )
 
     enemy_teams = []
@@ -198,27 +193,21 @@ def show_matchmaking_ui():
         min_value=0,
         value=10,
         step=1,
-        help="k=1000. Beispiel: 10 is equivalent zu 10k."
+        help="k=1000. Beispiel: 10 is equivalent zu 10k.",
     )
 
-    
     # Create enemy team input sections
     for i in range(num_teams):
         st.subheader(f"Gegner {i+1}")
-        
+
         col1, col2 = st.columns([1, 3])
-        
+
         # Only show names that are not already selected
-        available_names = [
-            name for name in GK_POSITIONS
-            if name not in selected_names
-        ]
+        available_names = [name for name in GK_POSITIONS if name not in selected_names]
 
         with col1:
             team_name = st.selectbox(
-                "Position",
-                options=available_names,
-                key=f"name_{i}"
+                "Position", options=available_names, key=f"name_{i}"
             )
 
             enemy_power = st.number_input(
@@ -227,41 +216,38 @@ def show_matchmaking_ui():
                 value=0,
                 step=1,
                 key=f"power_{i}",
-                help="k=1000. Beispiel: 10 is equivalent zu 10k."
+                help="k=1000. Beispiel: 10 is equivalent zu 10k.",
             )
 
             selected_names.append(team_name)
-        
+
         with col2:
             selected_heroes = st.multiselect(
-                "Wähle exakt 5 Helden",
-                HEROES,
-                max_selections=5,
-                key=f"heroes_{i}"
+                "Wähle exakt 5 Helden", HEROES, max_selections=5, key=f"heroes_{i}"
             )
-        
-        enemy_teams.append({
-            "team_name": team_name,
-            "heroes": selected_heroes,
-            "specified_power": enemy_power
-        })
+
+        enemy_teams.append(
+            {
+                "team_name": team_name,
+                "heroes": selected_heroes,
+                "specified_power": enemy_power,
+            }
+        )
 
     # Move the calculate button below the enemy inputs
     st.markdown("<br><br>", unsafe_allow_html=True)
 
     if st.button("Berechnen"):
-        
+
         # Validation
         incomplete_teams = [
             t["team_name"] or f"Team {idx+1}"
             for idx, t in enumerate(enemy_teams)
             if len(t["heroes"]) != 5
         ]
-        
+
         if incomplete_teams:
-            st.error(
-                "Jedes Team muss aus exakt 5 Helden bestehen."
-            )
+            st.error("Jedes Team muss aus exakt 5 Helden bestehen.")
         else:
             my_team_members = get_my_team_members(statistics_df)
 
@@ -269,11 +255,8 @@ def show_matchmaking_ui():
                 enemy_teams,
                 my_team_members,
                 lambda member, enemy: can_defeat(
-                    member,
-                    enemy,
-                    statistics_df,
-                    power_offset
-                )
+                    member, enemy, statistics_df, power_offset
+                ),
             )
 
             if assignments:
@@ -281,7 +264,9 @@ def show_matchmaking_ui():
                 prettify_assignments(assignments)
 
                 if unassigned_enemies:
-                    st.warning("No valid assignment found for the following enemy teams:")
+                    st.warning(
+                        "No valid assignment found for the following enemy teams:"
+                    )
 
                     for enemy in unassigned_enemies:
                         name = enemy["team_name"]

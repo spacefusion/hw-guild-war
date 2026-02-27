@@ -118,5 +118,5 @@ TEAM_NAMES = [
     "Chrissomat",
     "Moe",
     "Sharan",
-    "Oromis"
+    "Oromis",
 ]

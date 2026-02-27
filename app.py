@@ -1,6 +1,6 @@
 import streamlit as st
 from ui.matchmaking import show_matchmaking_ui
-from ui.training import show_training_ui
+from ui.trainingData import show_training_ui
 
 st.set_page_config(page_title="Team Matcher", layout="wide")
 
@@ -16,7 +16,7 @@ if current_page not in ["matchmaking", "training"]:
 page = st.sidebar.selectbox(
     "Choose page",
     ["Matchmaking", "Insert Training Data"],
-    index=0 if current_page == "matchmaking" else 1
+    index=0 if current_page == "matchmaking" else 1,
 )
 
 # Update URL when selection changes
