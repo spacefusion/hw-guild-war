@@ -10,7 +10,7 @@ def show_training_ui():
     player = st.selectbox("Dein Name", [""] + TEAM_NAMES)
     ownTeam = st.multiselect("Dein Team (5 Helden)", HEROES, max_selections=5)
     ownStrength = st.number_input("Deine Stärke (k)", min_value=0, value=0)
-    wins = st.number_input("Siege", min_value=0, value=0)
+    wins = st.number_input("Siege", min_value=0, value=1)
     losses = st.number_input("Niederlagen", min_value=0, value=0)
 
     enemyTeam = st.multiselect(

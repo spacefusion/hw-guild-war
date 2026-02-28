@@ -9,7 +9,7 @@ def show_individual_ui():
     st.title("Einzelnen Eintrag suchen")
 
     # load cached entries once per session
-    entries = load_training_data()
+    trainingDataList = load_training_data()
 
     player = st.selectbox("Spielername", [""] + TEAM_NAMES)
     enemy_team = st.multiselect(
@@ -17,7 +17,7 @@ def show_individual_ui():
     )
     enemy_strength = st.number_input("Gegnerische Stärke (k)", min_value=0, value=0)
     offset = st.number_input(
-        "Erlaubter Stärkeunterschied (k)", min_value=0, value=0, step=1
+        "Erlaubter Stärkeunterschied (k)", min_value=0, value=5, step=1
     )
 
     if st.button("Suche starten"):
@@ -31,17 +31,15 @@ def show_individual_ui():
 
         # normalize for matching
         normalized_enemy = sorted([h.lower() for h in enemy_team])
-        max_allowed = enemy_strength + offset
 
         results = []
-        for e in entries:
-            if e.player.lower() != player.lower():
+        for trainingData in trainingDataList:
+            if trainingData.player.lower() != player.lower():
                 continue
-            if sorted([h.lower() for h in e.enemyTeam]) != normalized_enemy:
+            if sorted([h.lower() for h in trainingData.enemyTeam]) != normalized_enemy:
                 continue
-            if e.enemyStrength <= max_allowed:
-                results.append(e)
-
+            if enemy_strength <= trainingData.enemyStrength + offset:
+                results.append(trainingData)
         if results:
             st.success(f"{len(results)} Einträge gefunden")
             for r in results:
@@ -51,13 +49,13 @@ def show_individual_ui():
                 except Exception:
                     display = r.__dict__
                 # always hand prettify a list for consistency
-                prettify_training_data([display])
+                prettify_training_data([display],enemy_strength)
         else:
             st.warning("Keine passenden Einträge in der Datenbank gefunden.")
 
 
 
-def prettify_training_data(trainingData):
+def prettify_training_data(trainingData, currentEnemyStrength):
     # support a single dictionary as well as a list
     if isinstance(trainingData, dict):
         trainingData = [trainingData]
@@ -68,7 +66,6 @@ def prettify_training_data(trainingData):
         ownStrength = data["ownStrength"]
         wins = data["wins"]
         losses = data["losses"]
-        enemyTeam = ", ".join(data["enemyTeam"])
         enemyStrength = data["enemyStrength"]
 
         # Format powers with k and handle NaN
@@ -78,4 +75,12 @@ def prettify_training_data(trainingData):
         st.subheader(f"{player} [{playerPowerStr}] vs Gegner [{enemyPowerStr}]")
         st.write (f"Verwendetes Team: {ownTeam} ")
         st.write(f"Siege: {wins}, Niederlagen: {losses}")
+
+        strengthDifference =enemyStrength-currentEnemyStrength
+        if(strengthDifference<0):
+            st.write(f"Derzeitiger Gegner ist {strengthDifference*-1}k stärker als in den Trainingsdaten!")
+        elif(strengthDifference>0):
+            st.write(f"Derzeitiger Gegner ist {strengthDifference}k schwächer als in den Trainingsdaten!")
+        else:
+            st.write(f"Derzeitiger Gegner ist gleich stark wie in den Trainingsdaten!")
         st.markdown("---")

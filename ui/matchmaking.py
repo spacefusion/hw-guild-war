@@ -92,8 +92,9 @@ def prettify_assignments(assignments):
         player_power_str = f"{int(player_power)}k" if pd.notna(player_power) else "?"
 
         st.subheader(f"{enemy_name} ({enemy_power_str})")
-        st.write(f"Enemy Heroes: {enemy_heroes}")
+        st.write(f"Gegner: {enemy_heroes}")
         # Player info with green team
+        st.write(f"Sieger laut Trainingsdaten:")
         st.markdown(
             f"<span style='color:green'>{player_name} ({player_power_str}) : </span>"
             f"<span style='color:green'>{player_team}</span>",
@@ -279,6 +280,6 @@ def show_matchmaking_ui():
                         else:
                             st.write(f"- {name}")
 
-                        st.write(f"  Heroes: {heroes}")
+                        st.write(f"Helden: {heroes}")
             else:
                 st.warning("Keine passenden Zuweisungen gefunden")

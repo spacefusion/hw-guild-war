@@ -1,5 +1,6 @@
 from models.trainingDataEntry import TrainingDataEntry
 from repositories.trainingDataRepository import TrainingDataRepository
+from datetime import datetime, timezone
 
 
 class TrainingDataService:
@@ -25,6 +26,7 @@ class TrainingDataService:
             losses=losses,
             enemyTeam=enemyTeam,
             enemyStrength=enemyStrength,
+            timestamp=datetime.now(timezone.utc)
         )
 
         inserted_entry = self.repository.insert_training_entry(entry.to_dict())
@@ -37,5 +39,8 @@ class TrainingDataService:
         for d in docs:
             # drop Mongo-specific fields
             data = {k: v for k, v in d.items() if k != "_id"}
+            # if the record has no timestamp (old data), give it one now (otherwise loading the data will fail)
+            if "timestamp" not in data or data.get("timestamp") is None:
+                data["timestamp"] = datetime.now(timezone.utc)
             entries.append(TrainingDataEntry(**data))
         return entries
