@@ -14,7 +14,7 @@ if current_page not in ["matchmaking", "training", "individual"]:
 PAGES = {
     "matchmaking": "Matchmaking",
     "training": "Trainingsdaten einfügen",
-    "individual": "Einzelnen Eintrag suchen",
+    "individual": "Eigene Trainingsdaten suchen",
 }
 
 REVERSE_PAGES = {v: k for k, v in PAGES.items()}

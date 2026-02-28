@@ -1,71 +1,123 @@
 # greedyMatchmaking.py
-def greedy_matchmaking(enemy_teams, my_team_members, can_defeat_func):
+from models.trainingDataEntry import TrainingDataEntry
+
+
+def _get_my_team_players(entries: list[TrainingDataEntry]) -> list[str]:
+    """Return a unique list of player names present in *entries*.
+    The matchmaking algorithm only needs the list of names to track which
+    players are available and how many attacks each has.
+    """
+    seen = set()
+    names: list[str] = []
+    for entry in entries:
+        if entry.player in seen:
+            continue
+        seen.add(entry.player)
+        names.append(entry.player)
+    return names
+
+
+def _can_defeat(
+    player: str, enemy, entries: list[TrainingDataEntry], power_offset: int
+):
+    """
+    Return a :class:`TrainingDataEntry` if *player* can defeat *enemy*.
+    The helper scans the entire history for the given player/enemy pair.  If
+    the enemy specifies a preferred power, the entry must meet the constraint
+    ``enemyStrength >= specified_power - power_offset``.  The first qualifying
+    record is returned.
+    """
+    enemy_sorted = tuple(sorted(enemy["heroes"]))
+    specified_power = enemy.get("specified_power", 0)
+
+    # filter entries for this player and enemy team
+    matches = [
+        e
+        for e in entries
+        if e.player == player and tuple(sorted(e.enemyTeam)) == enemy_sorted
+    ]
+
+    if not matches:
+        return None
+
+    for match in matches:
+        # decide on power constraint
+        if specified_power == 0:
+            return match
+
+        required_min_power = specified_power - power_offset
+        if match.enemyStrength >= required_min_power:
+            return match
+
+    return None
+
+
+def greedy_matchmaking(
+    enemy_teams, training_entries: list[TrainingDataEntry], power_offset=0
+):
     """Greedy assignment of players to enemy teams.
     *enemy_teams* is a list of dicts with keys ``team_name``, ``heroes`` and
     optionally ``specified_power``.
-    *my_team_members* should be a list of dicts produced by
-    :func:`ui.matchmaking.get_my_team_members` (``name``, ``team``,
-    ``power_own``).
-    *can_defeat_func* is a callable taking a member and an enemy and returning
-    either ``None`` or a mapping containing ``Power Enemy``, ``Own1``..``Own5``
-    and ``Power Own``.  This abstraction allows the source of statistics to
-    change (CSV vs Mongo) without touching the algorithm.
+    *training_entries* is the full list of :class:`TrainingDataEntry` objects
+    retrieved from MongoDB; the function is responsible for deriving the
+    usable player list and looking up historic matches itself.
+    The function returns ``(assignments, unassigned_enemies)`` where each
+    assignment is a dict containing:
+
+    * ``buildingPosition`` – the name/position passed in as ``team_name``
+    * ``searchedEnemyStrength`` – the value of ``specified_power`` supplied by
+      the caller when the enemy team was created
+    * ``entry`` – the matching :class:`TrainingDataEntry` object from the
+      database.
     """
 
-    remaining_attacks = {m["name"]: 2 for m in my_team_members}
+    my_team_players = _get_my_team_players(training_entries)
+    remaining_attacks = {name: 2 for name in my_team_players}
     enemy_options = []
 
     for enemy in enemy_teams:
-        possible_members = []
+        possible_players = []
 
-        for member in my_team_members:
-            result = can_defeat_func(member, enemy)
+        for player in my_team_players:
+            entry = _can_defeat(player, enemy, training_entries, power_offset)
 
-            if result is not None:
-                possible_members.append(
-                    {"member_name": member["name"], "match_row": result}
+            if entry is not None:
+                possible_players.append(
+                    {"player_name": player, "entry": entry}
                 )
 
-        enemy_options.append({"enemy": enemy, "possible_members": possible_members})
+        enemy_options.append({"enemy": enemy, "possible_players": possible_players})
 
-    enemy_options.sort(key=lambda x: len(x["possible_members"]))
+    enemy_options.sort(key=lambda x: len(x["possible_players"]))
 
     assignments = []
     unassigned_enemies = []
 
     for entry in enemy_options:
         enemy = entry["enemy"]
-        possible = entry["possible_members"]
+        possible = entry["possible_players"]
 
-        valid_members = [p for p in possible if remaining_attacks[p["member_name"]] > 0]
+        valid_players = [p for p in possible if remaining_attacks[p["player_name"]] > 0]
 
-        if not valid_members:
+        if not valid_players:
             unassigned_enemies.append(enemy)
             continue
 
         chosen = sorted(
-            valid_members, key=lambda m: remaining_attacks[m["member_name"]]
+            valid_players, key=lambda m: remaining_attacks[m["player_name"]]
         )[0]
 
-        match_row = chosen["match_row"]
+        entry = chosen["entry"]
 
         assignments.append(
             {
-                "enemy_team": enemy["team_name"],
-                "enemy_heroes": enemy["heroes"],
-                "enemy_power": match_row["Power Enemy"],
-                "assigned_player": chosen["member_name"],
-                "player_team": (
-                    match_row["Own1"],
-                    match_row["Own2"],
-                    match_row["Own3"],
-                    match_row["Own4"],
-                    match_row["Own5"],
-                ),
-                "player_power": match_row["Power Own"],
+                "buildingPosition": enemy["team_name"],
+                "searchedEnemyStrength": enemy.get("specified_power", 0),
+                # original training entry that produced the match
+                "entry": entry,
             }
         )
 
-        remaining_attacks[chosen["member_name"]] -= 1
+        remaining_attacks[chosen["player_name"]] -= 1
 
     return assignments, unassigned_enemies
