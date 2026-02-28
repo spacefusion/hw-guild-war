@@ -1,5 +1,16 @@
 # greedyMatchmaking.py
 def greedy_matchmaking(enemy_teams, my_team_members, can_defeat_func):
+    """Greedy assignment of players to enemy teams.
+    *enemy_teams* is a list of dicts with keys ``team_name``, ``heroes`` and
+    optionally ``specified_power``.
+    *my_team_members* should be a list of dicts produced by
+    :func:`ui.matchmaking.get_my_team_members` (``name``, ``team``,
+    ``power_own``).
+    *can_defeat_func* is a callable taking a member and an enemy and returning
+    either ``None`` or a mapping containing ``Power Enemy``, ``Own1``..``Own5``
+    and ``Power Own``.  This abstraction allows the source of statistics to
+    change (CSV vs Mongo) without touching the algorithm.
+    """
 
     remaining_attacks = {m["name"]: 2 for m in my_team_members}
     enemy_options = []

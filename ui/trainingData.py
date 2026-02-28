@@ -1,13 +1,13 @@
 import streamlit as st
 from services.trainingDataService import TrainingDataService
 from config.constants import HEROES, TEAM_NAMES
-
+from common.trainingDataLoader import load_training_data
 
 def show_training_ui():
     st.title("Trainingsdaten speichern")
     service = TrainingDataService()
 
-    player = st.selectbox("Dein Name", TEAM_NAMES)
+    player = st.selectbox("Dein Name", [""] + TEAM_NAMES)
     ownTeam = st.multiselect("Dein Team (5 Helden)", HEROES, max_selections=5)
     ownStrength = st.number_input("Deine Stärke (k)", min_value=0, value=0)
     wins = st.number_input("Siege", min_value=0, value=0)
@@ -23,6 +23,10 @@ def show_training_ui():
         if len(ownTeam) != 5 or len(enemyTeam) != 5:
             st.error("Beide Teams müssen genau 5 Helden enthalten.")
             return
+        
+        if player=="":
+            st.error("Spielername muss eingegeben werden!")
+            return
 
         insertedEntry = service.save_training_data(
             player=player,
@@ -36,3 +40,4 @@ def show_training_ui():
 
         st.success("Daten erfolgreich gespeichert")
         st.write(f"Eintrag: {insertedEntry}")
+        load_training_data.clear()

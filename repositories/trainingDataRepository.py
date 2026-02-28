@@ -11,9 +11,13 @@ class TrainingDataRepository:
         self.db = self.client[self.DATABASE_NAME]
         self.collection = self.db[self.COLLECTION_NAME]
 
-    def insert_training_entry(self, entry: dict) -> str:
+    def insert_training_entry(self, entry: dict) -> dict:
         """
-        Inserts a training entry into MongoDB and returns the inserted document ID.
+        Inserts a training entry into MongoDB and returns the inserted document.
         """
-        result = self.collection.insert_one(entry)
-        return str(result)
+        self.collection.insert_one(entry)
+        # return the inserted id string so callers can echo or store it
+        return entry
+
+    def get_all_training_entries(self) -> list[dict]:
+        return list(self.collection.find({}))

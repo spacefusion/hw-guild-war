@@ -30,8 +30,12 @@ class TrainingDataService:
         inserted_entry = self.repository.insert_training_entry(entry.to_dict())
         return inserted_entry
 
-
-def insert_training_entry(self, entry: dict) -> dict:
-    result = self.collection.insert_one(entry)
-    entry["_id"] = result.inserted_id  # add the MongoDB ID to the dict
-    return entry
+    def fetch_training_data(self) -> list[TrainingDataEntry]:
+        """Retrieve all entries from the database as dataclass objects."""
+        docs = self.repository.get_all_training_entries()
+        entries: list[TrainingDataEntry] = []
+        for d in docs:
+            # drop Mongo-specific fields
+            data = {k: v for k, v in d.items() if k != "_id"}
+            entries.append(TrainingDataEntry(**data))
+        return entries
