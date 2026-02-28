@@ -14,3 +14,16 @@ class TrainingDataEntry:
 
     def to_dict(self):
         return asdict(self)
+
+    # helpful repr/str for debugging and logging
+    def __repr__(self):
+        # keep same format as dataclass but shorter fields if necessary
+        return (
+            f"TrainingDataEntry(player={self.player!r}, ownTeam={self.ownTeam!r}, "
+            f"ownStrength={self.ownStrength!r}, wins={self.wins!r}, losses={self.losses!r}, "
+            f"enemyTeam={self.enemyTeam!r}, enemyStrength={self.enemyStrength!r})"
+        )
+
+    # alias for __repr__ when str() is called
+    def __str__(self):
+        return self.__repr__()

@@ -1,18 +1,20 @@
 import streamlit as st
 from ui.matchmaking import show_matchmaking_ui
 from ui.trainingData import show_training_ui
+from ui.individualData import show_individual_ui
 st.set_page_config(page_title="Team Matcher", layout="wide")
 
 # Read query param once
 query_params = st.query_params
 current_page = query_params.get("page", "training")
 
-if current_page not in ["matchmaking", "training"]:
+if current_page not in ["matchmaking", "training", "individual"]:
     current_page = "training"
 
 PAGES = {
     "matchmaking": "Matchmaking",
     "training": "Trainingsdaten einfügen",
+    "individual": "Einzelnen Eintrag suchen",
 }
 
 REVERSE_PAGES = {v: k for k, v in PAGES.items()}
@@ -41,5 +43,7 @@ if selected_page != st.session_state.page:
 # Render UI
 if st.session_state.page == "matchmaking":
     show_matchmaking_ui()
-else:
+elif st.session_state.page == "training":
     show_training_ui()
+else:
+    show_individual_ui()
