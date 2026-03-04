@@ -1,15 +1,49 @@
 import streamlit as st
 from services.trainingDataService import TrainingDataService
 from config.constants import HEROES, TEAM_NAMES
-from common.trainingDataLoader import load_training_data
+from common.trainingDataLoader import load_training_data, load_existing_player_teams
+
 
 def show_training_ui():
     st.title("Trainingsdaten speichern")
     service = TrainingDataService()
 
     player = st.selectbox("Dein Name", [""] + TEAM_NAMES)
-    ownTeam = st.multiselect("Dein Team (5 Helden)", HEROES, max_selections=5)
-    ownStrength = st.number_input("Deine Stärke (k)", min_value=0, value=0)
+
+    # when player changes we might need to reset the aggregated team selection
+    if player != st.session_state.get("_last_player"):
+        st.session_state.pop("aggregated_choice", None)
+        # also clear any previously filled team/strength so user can pick new values
+        st.session_state.pop("ownTeam", None)
+        st.session_state.pop("ownStrength", None)
+        st.session_state["_last_player"] = player
+
+    # load aggregated teams for this player and let user pick one to pre-fill values
+    if player:
+        aggregated_list = load_existing_player_teams(player)
+        if aggregated_list:
+            options = [""] + [
+                f"{', '.join(t.ownTeam)} (max {t.maxOwnStrength}k)"
+                for t in aggregated_list
+            ]
+            aggregated_choice = st.selectbox(
+                "Vorhandenes Team wählen", options, key="aggregated_choice"
+            )
+            if aggregated_choice:
+                idx = options.index(aggregated_choice) - 1
+                selected = aggregated_list[idx]
+                # update the session state so the following inputs show these values
+                st.session_state["ownTeam"] = selected.ownTeam
+                st.session_state["ownStrength"] = selected.maxOwnStrength
+
+    # user-specified team and strength (possibly overridden above)
+    ownTeam = st.multiselect(
+        "Dein Team (5 Helden)", HEROES, max_selections=5, key="ownTeam"
+    )
+    # the value is managed via session state (could be set by aggregated team selection)
+    ownStrength = st.number_input(
+        "Deine Stärke (k)", min_value=0, key="ownStrength"
+    )
     wins = st.number_input("Siege", min_value=0, value=1)
     losses = st.number_input("Niederlagen", min_value=0, value=0)
 
@@ -37,6 +71,7 @@ def show_training_ui():
         st.success("Daten erfolgreich gespeichert")
         st.write(f"Eintrag: {insertedEntry}")
         load_training_data.clear()
+        load_existing_player_teams.clear()
         st.session_state.pop("pending_duplicate", None)
 
     # handle first submission
@@ -44,7 +79,6 @@ def show_training_ui():
         if len(ownTeam) != 5 or len(enemyTeam) != 5:
             st.error("Beide Teams müssen genau 5 Helden enthalten.")
             return
-        
         if player == "":
             st.error("Spielername muss eingegeben werden!")
             return

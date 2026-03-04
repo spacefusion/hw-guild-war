@@ -21,3 +21,8 @@ class TrainingDataRepository:
 
     def get_all_training_entries(self) -> list[dict]:
         return list(self.collection.find({}))
+    
+    def get_all_by_player(self, player:str) -> list[dict]:
+        # filter by the player field; previous implementation accidentally
+        # passed a set which raised a TypeError from pymongo.
+        return list(self.collection.find({"player": player}))
