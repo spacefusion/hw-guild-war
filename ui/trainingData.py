@@ -16,6 +16,7 @@ def show_training_ui():
         # also clear any previously filled team/strength so user can pick new values
         st.session_state.pop("ownTeam", None)
         st.session_state.pop("ownStrength", None)
+        st.session_state.pop("_last_aggregated_choice", None)
         st.session_state["_last_player"] = player
 
     # load aggregated teams for this player and let user pick one to pre-fill values
@@ -29,12 +30,18 @@ def show_training_ui():
             aggregated_choice = st.selectbox(
                 "Vorhandenes Team wählen", options, key="aggregated_choice"
             )
-            if aggregated_choice:
+            # only prefill values if the aggregated choice has changed, 
+            # so that we are still able to change the ownStrength and ownTeam inputs without them being overridden by the aggregated team selection on every rerun
+            if aggregated_choice and aggregated_choice != st.session_state.get("_last_aggregated_choice"):
                 idx = options.index(aggregated_choice) - 1
                 selected = aggregated_list[idx]
                 # update the session state so the following inputs show these values
                 st.session_state["ownTeam"] = selected.ownTeam
                 st.session_state["ownStrength"] = selected.maxOwnStrength
+                st.session_state["_last_aggregated_choice"] = aggregated_choice
+            elif not aggregated_choice:
+                # if choice is cleared, track that change too
+                st.session_state["_last_aggregated_choice"] = aggregated_choice
 
     # user-specified team and strength (possibly overridden above)
     ownTeam = st.multiselect(
