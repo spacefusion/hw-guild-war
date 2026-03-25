@@ -31,3 +31,7 @@ class TrainingDataRepository:
     def update_training_entry(self, entry_id: str, updates: dict):
         """Update fields of an existing training entry by its MongoDB _id."""
         self.collection.update_one({"_id": ObjectId(entry_id)}, {"$set": updates})
+
+    def delete_training_entry(self, entry_id: str):
+        """Delete a training entry by its MongoDB _id."""
+        self.collection.delete_one({"_id": ObjectId(entry_id)})

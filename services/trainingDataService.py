@@ -95,6 +95,10 @@ class TrainingDataService:
         }
         self.repository.update_training_entry(entry_id, updates)
 
+    def delete_training_data(self, entry_id: str):
+        """Delete a training entry by its MongoDB _id."""
+        self.repository.delete_training_entry(entry_id)
+
     def get_unique_player_teams_with_max_strength(self, player: str) -> list[AggregatedTeam]:
         """
         Returns a list of unique own teams for the given player,

@@ -92,10 +92,51 @@ def prettify_training_data(trainingData, currentEnemyStrength):
 
         if entry_id:
             edit_key = f"edit_open_{entry_id}"
-            if st.button("Bearbeiten", key=f"btn_edit_{entry_id}"):
-                st.session_state[edit_key] = not st.session_state.get(edit_key, False)
+            confirm_delete_key = f"confirm_delete_{entry_id}"
+            is_editing = st.session_state.get(edit_key, False)
 
-            if st.session_state.get(edit_key, False):
+            col_edit, col_delete, _ = st.columns([1, 1, 6])
+            with col_edit:
+                edit_label = "Schließen" if is_editing else "Bearbeiten"
+                if st.button(edit_label, key=f"btn_edit_{entry_id}"):
+                    st.session_state[edit_key] = not is_editing
+                    st.rerun()
+            with col_delete:
+                if st.button("Löschen", key=f"btn_delete_{entry_id}"):
+                    st.session_state[confirm_delete_key] = True
+
+            if st.session_state.get(confirm_delete_key, False):
+                st.warning("Diesen Eintrag wirklich löschen?")
+                st.markdown(
+                    f"""
+                    <style>
+                    .st-key-delete_btn_{entry_id} button {{
+                        color: red !important;
+                        border-color: red !important;
+                    }}
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                col_yes, col_no, _ = st.columns([1, 1, 6])
+                with col_yes:
+                    with st.container(key=f"delete_btn_{entry_id}"):
+                        if st.button("Ja, löschen", key=f"btn_confirm_delete_{entry_id}"):
+                            service = TrainingDataService()
+                            service.delete_training_data(entry_id)
+                            load_training_data.clear()
+                            st.session_state["search_results"] = [
+                                sr for sr in st.session_state.get("search_results", [])
+                                if sr.get("_id") != entry_id
+                            ]
+                            st.session_state[confirm_delete_key] = False
+                            st.rerun()
+                with col_no:
+                    if st.button("Abbrechen", key=f"btn_cancel_delete_{entry_id}"):
+                        st.session_state[confirm_delete_key] = False
+                        st.rerun()
+
+            if is_editing:
                 with st.form(key=f"form_edit_{entry_id}"):
                     new_wins = st.number_input("Siege", value=int(wins), min_value=0)
                     new_losses = st.number_input("Niederlagen", value=int(losses), min_value=0)
