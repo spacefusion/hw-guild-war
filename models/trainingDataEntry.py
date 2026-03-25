@@ -19,6 +19,7 @@ class TrainingDataEntry:
     timestamp: Optional[datetime] = field(
         default_factory=datetime.now()
     )  # when the entry was created (auto-set on insert)
+    _id: Optional[str] = field(default=None)
 
     def to_dict(self):
         # asdict handles datetime objects which pymongo will store as BSON datetimes

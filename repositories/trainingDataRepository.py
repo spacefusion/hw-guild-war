@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson import ObjectId
 from config.settings import MONGO_URI
 
 
@@ -26,3 +27,7 @@ class TrainingDataRepository:
         # filter by the player field; previous implementation accidentally
         # passed a set which raised a TypeError from pymongo.
         return list(self.collection.find({"player": player}))
+
+    def update_training_entry(self, entry_id: str, updates: dict):
+        """Update fields of an existing training entry by its MongoDB _id."""
+        self.collection.update_one({"_id": ObjectId(entry_id)}, {"$set": updates})

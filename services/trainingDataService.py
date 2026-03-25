@@ -31,7 +31,9 @@ class TrainingDataService:
             timestamp=datetime.now(timezone.utc),
         )
 
-        inserted_entry = self.repository.insert_training_entry(entry.to_dict())
+        entry_dict = entry.to_dict()
+        entry_dict.pop("_id", None)
+        inserted_entry = self.repository.insert_training_entry(entry_dict)
         return inserted_entry
 
     def fetch_training_data(self) -> list[TrainingDataEntry]:
@@ -39,6 +41,7 @@ class TrainingDataService:
         docs = self.repository.get_all_training_entries()
         entries: list[TrainingDataEntry] = []
         for d in docs:
+            entry_id = str(d.get("_id", ""))
             # drop Mongo-specific fields
             data = {k: v for k, v in d.items() if k != "_id"}
             # if the record has no timestamp (old data), give it one now (otherwise loading the data will fail)
@@ -51,7 +54,7 @@ class TrainingDataService:
                         data[num_field] = int(data[num_field])
                     except ValueError:
                         pass
-            entries.append(TrainingDataEntry(**data))
+            entries.append(TrainingDataEntry(**data, _id=entry_id))
         return entries
 
     def fetch_data_by_player(self, player: str) -> list[TrainingDataEntry]:
@@ -59,6 +62,7 @@ class TrainingDataService:
         docs = self.repository.get_all_by_player(player)
         entries: list[TrainingDataEntry] = []
         for d in docs:
+            entry_id = str(d.get("_id", ""))
             # drop Mongo-specific fields
             data = {k: v for k, v in d.items() if k != "_id"}
             # if the record has no timestamp (old data), give it one now (otherwise loading the data will fail)
@@ -71,9 +75,25 @@ class TrainingDataService:
                         data[num_field] = int(data[num_field])
                     except ValueError:
                         pass
-            entries.append(TrainingDataEntry(**data))
+            entries.append(TrainingDataEntry(**data, _id=entry_id))
         return entries
 
+    def update_training_data(
+        self,
+        entry_id: str,
+        wins: int,
+        losses: int,
+        enemy_strength: int,
+        own_strength: int,
+    ):
+        """Update mutable fields of an existing training entry by its MongoDB _id."""
+        updates = {
+            "wins": wins,
+            "losses": losses,
+            "enemyStrength": enemy_strength,
+            "ownStrength": own_strength,
+        }
+        self.repository.update_training_entry(entry_id, updates)
 
     def get_unique_player_teams_with_max_strength(self, player: str) -> list[AggregatedTeam]:
         """
